@@ -1,4 +1,4 @@
-name: 'Minio upload'
+name: 'MinIO mirror upload'
 description: 'Deploy to Minio Storage'
 author: 'herbetom'
 inputs:
