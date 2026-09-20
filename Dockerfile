@@ -1,4 +1,4 @@
-FROM minio/mc:RELEASE.2025-08-13T08-35-41Z
+FROM rclone/rclone:v1.75-stable
 
 # Copies your code file from your action repository to the filesystem path `/` of the container
 COPY entrypoint.sh /entrypoint.sh
