@@ -1,26 +1,25 @@
-# Minio Deploy GitHub Action
+# S3 Deploy GitHub Action
 
-This is a fork from foldspace-stack/minio-deploy-action with some minor changes.
-Run [minio client][] in GitHub Actions to deploy files to Minio object storage.
-
-It uses the `mc mirror --overwrite` command to deploy.
+This is a fork from foldspace-stack/minio-deploy-action with some changes.
+Run [rclone][] in GitHub Actions to deploy files to S3 compatible object storage.
 
 ## Usage
 
 Put the following step in your workflow:
 
 ```yml
-- name: Minio Deploy
-  uses: herbetom/minio-deploy-action@v1
+- name: S3 Deploy
+  uses: herbetom/s3-deploy-action@v2
   with:
-    endpoint: ${{ secrets.MINIO_ENDPOINT }}
-    access_key: ${{ secrets.MINIO_ACCESS_KEY }}
-    secret_key: ${{ secrets.MINIO_SECRET_KEY }}
+    endpoint: ${{ secrets.S3_ENDPOINT }}
+    access_key: ${{ secrets.S3_ACCESS_KEY }}
+    secret_key: ${{ secrets.S3_SECRET_KEY }}
     bucket: 'mybucket'
     # Optional inputs with their defaults:
     source_dir: 'public'
     target_dir: '/'
     extra_args: ''
+    mode: 'copy' # use 'sync' to delete files not present
 ```
 
 Workflow example:
@@ -40,22 +39,20 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v7
 
-      - name: Minio Deploy
-        uses: herbetom/minio-deploy-action@v1
+      - name: S3 Deploy
+        uses: herbetom/s3-deploy-action@v2
         with:
-          endpoint: ${{ secrets.MINIO_ENDPOINT }}
-          access_key: ${{ secrets.MINIO_ACCESS_KEY }}
-          secret_key: ${{ secrets.MINIO_SECRET_KEY }}
+          endpoint: ${{ secrets.S3_ENDPOINT }}
+          access_key: ${{ secrets.S3_ACCESS_KEY }}
+          secret_key: ${{ secrets.S3_SECRET_KEY }}
           bucket: 'mybucket'
           source_dir: 'public'
           target_dir: '/'
-          extra_args: '--remove'
+          mode: 'snyc'
 ```
 
 ## License
 
 Licensed under the MIT license. See [LICENSE](LICENSE).
-
-[minio client]: https://docs.min.io/docs/minio-client-quickstart-guide

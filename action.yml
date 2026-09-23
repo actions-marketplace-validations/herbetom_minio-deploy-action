@@ -1,19 +1,23 @@
-name: 'MinIO mirror upload'
-description: 'Deploy to Minio Storage'
+name: 'S3 mirror upload'
+description: 'Deploy to S3 compatible Storage'
 author: 'herbetom'
 inputs:
   endpoint:
-    description: 'Minio endpoint of object storage host'
+    description: 'Endpoint URL of the object storage host (including https://)'
     required: true
   access_key:
-    description: 'Minio access key (username)'
+    description: 'Access key (username)'
     required: true
   secret_key:
-    description: 'Minio secret key (password)'
+    description: 'Secret key (password)'
     required: true
   bucket:
-    description: 'Set the target minio bucket for deployment.'
+    description: 'Set the target bucket for deployment.'
     required: true
+  region:
+    description: 'S3 region (optional)'
+    required: false
+    default: ''
   source_dir:
     description: 'Set an input directory for deployment.'
     required: false
@@ -22,18 +26,23 @@ inputs:
     description: 'Set a target directory for deployment (with a leading slash).'
     required: false
     default: '/'
+  mode:
+    description: '"copy" (never deletes) or "sync" (deletes remote files missing locally)'
+    required: false
+    default: 'copy'
   extra_args:
-    description: 'Add additional Args to the mirror command like --remove'
+    description: 'Add additional Args to the rclone command'
     required: false
     default: ''
 runs:
   using: 'docker'
   image: 'Dockerfile'
   env:
-    MINIO_ENDPOINT: ${{ inputs.endpoint }}
-    MINIO_ACCESS_KEY: ${{ inputs.access_key }}
-    MINIO_SECRET_KEY: ${{ inputs.secret_key }}
-    MINIO_EXTRA_ARGS: ${{ inputs.extra_args }}
+    S3_ENDPOINT: ${{ inputs.endpoint }}
+    S3_ACCESS_KEY: ${{ inputs.access_key }}
+    S3_SECRET_KEY: ${{ inputs.secret_key }}
+    S3_REGION: ${{ inputs.region }}
+    RCLONE_MODE: ${{ inputs.mode }}
   args:
     - ${{ inputs.source_dir }}
     - '${{ inputs.bucket }}${{ inputs.target_dir }}'
